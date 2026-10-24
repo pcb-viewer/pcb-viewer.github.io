@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Просмотр Gerber онлайн в 2D и 3D — PCB Viewer</title>
+<meta name="description" content="Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере.">
+<meta name="keywords" content="gerber просмотр онлайн, просмотр gerber файлов, gerber viewer, 3D печатной платы, открыть gerber, pcb viewer">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="yandex-verification" content="e2db4677e0fc84c1" />
+<link rel="canonical" href="https://frozzy2021.github.io/pcb-viewer/">
+<meta property="og:url" content="https://frozzy2021.github.io/pcb-viewer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="PCB Viewer">
+<meta property="og:title" content="Просмотр Gerber онлайн в 2D и 3D — PCB Viewer">
+<meta property="og:description" content="Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере.">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PCB Viewer","url":"https://frozzy2021.github.io/pcb-viewer/","alternateName":"Просмотр Gerber онлайн","applicationCategory":"DeveloperApplication","operatingSystem":"Any","inLanguage":"ru","description":"Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере.","offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<meta name="theme-color" content="#1f8f4a">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%230f6b32'/%3E%3Cg fill='none' stroke='%23d9b24c' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 46h14l9-14h16'/%3E%3Cpath d='M13 18h18l7 7'/%3E%3C/g%3E%3Cg fill='%23d9b24c'%3E%3Ccircle cx='13' cy='46' r='6'/%3E%3Ccircle cx='52' cy='32' r='6'/%3E%3Ccircle cx='13' cy='18' r='6'/%3E%3C/g%3E%3Cg fill='%230f6b32'%3E%3Ccircle cx='13' cy='46' r='2.4'/%3E%3Ccircle cx='52' cy='32' r='2.4'/%3E%3Ccircle cx='13' cy='18' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--bg:#f3f4f6;--panel:#fff;--tx:#1b1f24;--mu:#5f6b76;--bd:#d6dae0;--ac:#1f8f4a;--st:#14171a;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1214;--panel:#1a1e22;--tx:#e8ebee;--mu:#97a1ab;--bd:#2c3238;--ac:#3dbb6e;color-scheme:dark}}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}body{height:100dvh}
+body{background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--bd)}
+h1{font-size:16px;margin:0 8px 0 0}
+button,select,label.btn{font:inherit;color:var(--tx);background:var(--panel);border:1px solid var(--bd);border-radius:6px;padding:5px 11px;cursor:pointer}
+button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+label.btn.main{background:var(--ac);border-color:var(--ac);color:#fff}
+.seg{display:flex;gap:0}.seg button{border-radius:0}.seg button:first-child{border-radius:6px 0 0 6px}.seg button:last-child{border-radius:0 6px 6px 0}
+main{flex:1;display:flex;min-height:0}
+aside{width:230px;padding:10px;background:var(--panel);border-right:1px solid var(--bd);overflow:auto;font-size:13px}
+aside h2{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:12px 0 6px}
+aside label{display:flex;gap:6px;align-items:center;padding:2px 0}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.fn{color:var(--mu);font-size:11px;margin-left:auto;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#stage{flex:1;position:relative;background:var(--st);min-width:0}
+canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#drop{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#000a;color:#fff;font-size:20px;z-index:3}
+#empty>div{margin:auto}#empty details{margin-top:18px;text-align:left;max-width:420px;color:#9aa5b0;font-size:13px}#empty summary{cursor:pointer;text-align:center;color:#c5ccd3}#empty details p{margin:10px 0 0;max-width:none}
+#empty{overflow:auto;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;z-index:2;color:#e8ebee}
+#empty h2{font-size:20px;margin:0 0 8px}#empty p{color:#9aa5b0;margin:0 0 16px;max-width:360px}#empty .btn{display:inline-block;margin:4px}#emsg{color:#f0a060!important}
+#hint{position:absolute;left:10px;bottom:8px;color:#9aa5b0;font-size:12px;z-index:2;pointer-events:none}
+a.sup{margin-left:auto;text-decoration:none;color:#fff;background:#e8793a;border:1px solid #e8793a;border-radius:6px;padding:5px 11px;display:inline-flex;align-items:center}
+#tg{display:none}
+@media(max-width:700px){header{gap:6px;padding:6px 8px}h1{display:none}button,select,label.btn,a.sup{padding:8px 11px;min-height:38px}#tg{display:inline-block}main{flex-direction:column-reverse}aside{width:100%;max-height:38%;border-right:0;border-top:1px solid var(--bd);padding:8px 10px}aside{display:none}aside.open{display:block}#hint{display:none}header>*{order:2}label.btn.main{order:0;flex:1 1 40%;text-align:center}a.sup{order:1;flex:1 1 40%;justify-content:center;margin-left:0}}
+</style>
+</head>
+<body>
+<header>
+<h1>PCB Viewer: просмотр Gerber онлайн</h1>
+<label class="btn main">Загрузить Gerber / ZIP<input id="fi" type="file" multiple hidden></label>
+<div class="seg"><button id="v2" class="on">2D</button><button id="v3">3D</button></div>
+<div class="seg"><button id="st" class="on">Верх</button><button id="sb">Низ</button></div>
+<select id="mc"><option value="green">Маска: зелёная</option><option value="black">Маска: чёрная</option><option value="blue">Маска: синяя</option><option value="red">Маска: красная</option></select>
+<button id="ft" title="Вписать в экран">⤢ Вписать</button>
+<button id="tg">Слои</button>
+<a class="sup" href="https://www.donationalerts.com/r/frozzy2021" target="_blank" rel="noopener noreferrer">Поддержать проект</a>
+</header>
+<main>
+<aside>
+<div id="info">Файлы не выбраны.</div>
+<h2>Вид платы</h2>
+<label><input type="checkbox" id="real" checked> Реалистичный вид</label>
+<label><input type="checkbox" id="mk" checked> Паяльная маска</label>
+<h2>Слои</h2>
+<div id="ll"></div>
+</aside>
+<div id="stage"><canvas id="c2"></canvas><canvas id="c3" style="display:none"></canvas><div id="empty"><div><h2>Выберите Gerber-файлы</h2><p>ZIP-архив или набор файлов платы</p><p id="emsg"></p><label class="btn main">Выбрать файл<input id="fi2" type="file" multiple hidden></label>
+<details><summary>О сервисе</summary><p>PCB Viewer это бесплатный просмотрщик Gerber-файлов прямо в браузере. Он открывает слои формата Gerber RS-274X и файлы сверловки Excellon: медь, паяльную маску, шелкографию, контур платы и отверстия.</p><p>Загрузите ZIP-архив с производственными файлами из вашей САПР или выберите файлы слоёв по отдельности. Плату можно рассматривать сверху и снизу в плоском виде, включать и выключать слои, а также вращать в объёмной 3D-модели.</p><p>Регистрация не нужна. Файлы обрабатываются на вашем устройстве и никуда не отправляются. Сервис работает на компьютере, телефоне и планшете.</p></details></div></div><div id="drop">Отпустите файлы здесь</div><div id="hint">Колесо — масштаб, перетаскивание — сдвиг</div></div>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+let LAY={},B=null,side='top',view='2d',vis={},V={s:1,ox:0,oy:0},maskKey='green';
+const DPR=Math.min(window.devicePixelRatio||1,2),TS=matchMedia('(pointer:coarse)').matches?1536:2560;
+const ORDER=['bmask','bcu','fmask','fcu','bsilk','fsilk','outline','drill'];
+const COL={fcu:'#d0453c',bcu:'#4d86d6',fmask:'#1fa653',bmask:'#18a8a0',fsilk:'#f2ee9a',bsilk:'#e9a89b',outline:'#f0e24a',drill:'#ffffff'};
+const NM={fcu:'Медь верх',bcu:'Медь низ',fmask:'Маска верх',bmask:'Маска низ',fsilk:'Шелкография верх',bsilk:'Шелкография низ',outline:'Контур платы',drill:'Отверстия'};
+const MASKS={green:['#0d5c2b','#1f8f4a'],black:['#17181b','#2c2e34'],blue:['#0c3b80','#2166c0'],red:['#9a1b1b','#cf4040']};
+
+function kind(n,t){n=n.toLowerCase();
+ if(/^\s*m48/i.test(t)||/\.(drl|xln|drd)$/.test(n)||/(^|[-_.])(pth|npth|drill)/.test(n))return'drill';
+ if(/\.(gko|gm1|gml)$|edge[._-]?cuts|outline|profile/.test(n))return'outline';
+ if(/\.gts$|f[._]mask|top.*mask/.test(n))return'fmask';
+ if(/\.gbs$|b[._]mask|bot.*mask/.test(n))return'bmask';
+ if(/\.gto$|f[._]silk|top.*silk/.test(n))return'fsilk';
+ if(/\.gbo$|b[._]silk|bot.*silk/.test(n))return'bsilk';
+ if(/\.gtl$|f[._]cu|top.*cop/.test(n))return'fcu';
+ if(/\.gbl$|b[._]cu|bot.*cop/.test(n))return'bcu';
+ const sd=/top|front/.test(n)?'f':/bot|back/.test(n)?'b':null;
+ if(sd){if(/mask/.test(n))return sd+'mask';if(/silk|legend|overlay/.test(n))return sd+'silk';if(/cop|\bcu\b/.test(n)||/[-_. ](top|bottom|bot)\.(gbr|ger)$/.test(n))return sd+'cu'}
+ return null}
+
+function pG(t){
+ const pr=[];let k=1,fz='L',F={xi:2,xd:4,yi:2,yd:4},ap={},cur=null,op=2,md=1,reg=false,ct=null,x=0,y=0,clr=false;
+ const N=(s,i,d)=>{if(s==null)return null;const ng=s[0]=='-';s=s.replace(/^[+-]/,'');let v;
+  if(s.includes('.'))v=parseFloat(s);else{if(fz=='T')s=s.padEnd(i+d,'0');v=parseInt(s,10)/Math.pow(10,d)}
+  return(ng?-1:1)*v*k};
+ const fc=()=>{if(ct&&ct.length>2)pr.push({t:'r',pts:ct,clr});ct=null};
+ const re=/%([^%]*)%|([^%*]+)\*/g;let M;
+ t=t.replace(/\r?\n/g,'');
+ while((M=re.exec(t))){
+  if(M[1]!==undefined){
+   for(const p of M[1].split('*')){let m;
+    if(/^FS/.test(p)){m=p.match(/FS([LT]).*X(\d)(\d)Y(\d)(\d)/);if(m){fz=m[1];F={xi:+m[2],xd:+m[3],yi:+m[4],yd:+m[5]}}}
+    else if(/^MO/.test(p))k=/IN/.test(p)?25.4:1;
+    else if(/^LP/.test(p))clr=p[2]=='C';
+    else if(/^ADD/.test(p)){m=p.match(/^ADD(\d+)([A-Za-z_][\w.]*),?(.*)$/);if(!m)continue;
+     const a=m[3]?m[3].split('X').map(Number):[];let s=m[2],w,h;
+     if(s=='C'||s=='P'){s='C';w=h=a[0]}else if(s=='R'||s=='O'){w=a[0];h=a[1]}
+     else if(a.length>=9){const xs=[],ys=[];for(let i=1;i<9;i+=2){xs.push(a[i]);ys.push(a[i+1])}
+      w=Math.max(...xs)-Math.min(...xs);h=Math.max(...ys)-Math.min(...ys);s='R'}
+     else{s='C';w=h=a[0]||.1}
+     ap[+m[1]]={s,w:w*k,h:h*k}}
+   }continue}
+  let c=M[2],g=null,m=c.match(/^G(\d+)(.*)$/);if(m){g=+m[1];c=m[2]}
+  if(g==4)continue;if(g==36){reg=true;ct=null;continue}if(g==37){fc();reg=false;continue}
+  if(g==1||g==2||g==3)md=g;if(g==70)k=25.4;if(g==71)k=1;
+  const dm=c.match(/^D(\d+)$/);if(dm&&+dm[1]>=10){cur=ap[+dm[1]]||null;continue}
+  const co={};c.replace(/([XYIJD])([+-]?[\d.]+)/g,(_,a,b)=>co[a]=b);
+  if(co.X==null&&co.Y==null&&co.D==null)continue;
+  if(co.D!=null)op=+co.D;
+  const nx=co.X!=null?N(co.X,F.xi,F.xd):x,ny=co.Y!=null?N(co.Y,F.yi,F.yd):y;
+  if(op==2){if(reg){fc();ct=[[nx,ny]]}}
+  else if(op==1){
+   let sg=[[x,y]];
+   if(md==1)sg.push([nx,ny]);
+   else{const cx=x+(N(co.I,F.xi,F.xd)||0),cy=y+(N(co.J,F.yi,F.yd)||0),r=Math.hypot(x-cx,y-cy);
+    let a1=Math.atan2(y-cy,x-cx),a2=Math.atan2(ny-cy,nx-cx);
+    if(md==2){if(a2>=a1-1e-9)a2-=2*Math.PI}else{if(a2<=a1+1e-9)a2+=2*Math.PI}
+    const n=Math.max(6,Math.ceil(Math.abs(a2-a1)/.1));
+    for(let i=1;i<=n;i++){const a=a1+(a2-a1)*i/n;sg.push([cx+r*Math.cos(a),cy+r*Math.sin(a)])}}
+   if(reg){if(!ct)ct=[[x,y]];for(let i=1;i<sg.length;i++)ct.push(sg[i])}
+   else for(let i=0;i<sg.length-1;i++)pr.push({t:'l',a:[...sg[i],...sg[i+1]],w:cur?cur.w:0,rd:!cur||cur.s=='C',clr})}
+  else if(op==3&&cur&&!reg)pr.push({t:'f',s:cur.s,x:nx,y:ny,w:cur.w,h:cur.h,clr});
+  x=nx;y=ny}
+ fc();return pr}
+
+function pD(t){const h=[],T={};let k=1,cur=0;
+ for(let l of t.split(/\r?\n/)){l=l.trim();
+  if(/^(METRIC|M71)/.test(l))k=1;if(/^(INCH|M72)/.test(l))k=25.4;
+  let m=l.match(/^T(\d+)C([\d.]+)/);if(m){T[+m[1]]=parseFloat(m[2])*k;continue}
+  m=l.match(/^T(\d+)$/);if(m){cur=T[+m[1]]||.8;continue}
+  m=l.match(/^X([+-]?[\d.]+)Y([+-]?[\d.]+)/);
+  if(m&&cur){const f=s=>s.includes('.')?parseFloat(s)*k:parseInt(s,10)/(k==1?1e3:1e4)*k;
+   h.push({t:'f',s:'C',x:f(m[1]),y:f(m[2]),w:cur,h:cur})}}
+ return h}
+
+function bnd(Ls){let a=1e9,b=1e9,c=-1e9,d=-1e9;
+ const u=(x,y,r=0)=>{a=Math.min(a,x-r);c=Math.max(c,x+r);b=Math.min(b,y-r);d=Math.max(d,y+r)};
+ Ls.forEach(L=>L&&L.prims.forEach(p=>{if(p.t=='l'){u(p.a[0],p.a[1],p.w/2);u(p.a[2],p.a[3],p.w/2)}
+  else if(p.t=='f')u(p.x,p.y,Math.max(p.w,p.h)/2);else p.pts.forEach(q=>u(q[0],q[1]))}));
+ return a>c?null:{minx:a,miny:b,maxx:c,maxy:d}}
+
+const POOL={};
+function dl(L,W,H,m,col,key,inv){
+ const c=POOL[key]||(POOL[key]=document.createElement('canvas'));
+ if(c.width!=W||c.height!=H){c.width=W;c.height=H}
+ const g=c.getContext('2d');g.globalCompositeOperation='source-over';g.clearRect(0,0,W,H);
+ g.fillStyle=g.strokeStyle='#fff';
+ const P=(x,y)=>[m.fx?m.ox+(m.maxx-x)*m.s:m.ox+(x-m.minx)*m.s,m.fy?m.oy+(y-m.miny)*m.s:m.oy+(m.maxy-y)*m.s],s=m.s;
+ if(inv){const a=P(m.minx,m.maxy),b=P(m.maxx,m.miny);g.fillRect(Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.abs(b[0]-a[0]),Math.abs(b[1]-a[1]))}
+ for(const p of L.prims){
+  g.globalCompositeOperation=(!!p.clr!=!!inv)?'destination-out':'source-over';
+  if(p.t=='l'){const a=P(p.a[0],p.a[1]),b=P(p.a[2],p.a[3]);g.lineWidth=Math.max(p.w*s,.6);g.lineCap=p.rd?'round':'square';
+   g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke()}
+  else if(p.t=='f'){const q=P(p.x,p.y);
+   if(p.s=='C'){g.beginPath();g.arc(q[0],q[1],Math.max(p.w*s/2,.3),0,7);g.fill()}
+   else if(p.s=='R')g.fillRect(q[0]-p.w*s/2,q[1]-p.h*s/2,p.w*s,p.h*s);
+   else{const r=Math.min(p.w,p.h)*s,d=(Math.max(p.w,p.h)-Math.min(p.w,p.h))*s/2;
+    g.lineWidth=r;g.lineCap='round';g.beginPath();
+    if(p.w>=p.h){g.moveTo(q[0]-d,q[1]);g.lineTo(q[0]+d,q[1])}else{g.moveTo(q[0],q[1]-d);g.lineTo(q[0],q[1]+d)}g.stroke()}}
+  else{g.beginPath();p.pts.forEach((v,i)=>{const q=P(v[0],v[1]);i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1])});g.closePath();g.fill()}}
+ g.globalCompositeOperation='source-in';g.fillStyle=col;g.fillRect(0,0,W,H);return c}
+
+function composite(sd,W,H,m,key){
+ const o=POOL[key+'o']||(POOL[key+'o']=document.createElement('canvas'));if(o.width!=W||o.height!=H){o.width=W;o.height=H}const g=o.getContext('2d'),p=sd=='top'?'f':'b',[bs,un]=MASKS[maskKey];g.globalCompositeOperation='source-over';g.clearRect(0,0,W,H);
+ const off=!$('#mk').checked||!vis[p+'mask'],bx=m.ox,by=m.oy,bw=(m.maxx-m.minx)*m.s,bh=(m.maxy-m.miny)*m.s;
+ g.save();g.beginPath();g.rect(bx,by,bw,bh);g.clip();g.fillStyle=off?'#c2ad72':bs;g.fillRect(bx,by,bw,bh);
+ const cu=vis[p+'cu']?LAY[p+'cu']:null,mk=off?null:LAY[p+'mask'],sk=vis[p+'silk']?LAY[p+'silk']:null;
+ if(cu){g.drawImage(dl(cu,W,H,m,off?'#d9b24c':un,key+'a'),0,0);
+  const e=dl(cu,W,H,m,'#d9b24c',key+'b');
+  if(mk){const x=e.getContext('2d');x.globalCompositeOperation='destination-in';x.drawImage(dl(mk,W,H,m,'#fff',key+'c'),0,0);x.globalCompositeOperation='source-over'}
+  g.drawImage(e,0,0)}
+ if(sk)g.drawImage(dl(sk,W,H,m,'#f4f4ee',key+'d'),0,0);
+ if(vis.outline&&LAY.outline){g.globalAlpha=.4;g.drawImage(dl(LAY.outline,W,H,m,'#000',key+'f'),0,0);g.globalAlpha=1}
+ if(LAY.drill&&vis.drill){g.globalCompositeOperation='destination-out';g.drawImage(dl(LAY.drill,W,H,m,'#000',key+'e'),0,0);g.globalCompositeOperation='source-over'}
+ g.restore();return o}
+
+function fit(){const c=$('#c2'),w=B.maxx-B.minx,h=B.maxy-B.miny,s=Math.min(c.width/(w*1.08),c.height/(h*1.08));V={s,ox:(c.width-w*s)/2,oy:(c.height-h*s)/2}}
+function draw2(){const c=$('#c2'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(!B||!c.width)return;
+ const m={...B,...V,fx:side=='bottom',fy:false};
+ if($('#real').checked)g.drawImage(composite(side,c.width,c.height,m,'r'),0,0);
+ else{ORDER.forEach(k=>{if(LAY[k]&&vis[k]){const mk=/mask/.test(k);g.globalAlpha=mk?.45:.85;g.drawImage(dl(LAY[k],c.width,c.height,m,COL[k],'l'+k,mk),0,0)}});g.globalAlpha=1}}
+(()=>{const c=$('#c2'),ps={};let pd=0;
+ const zm=(k,cx,cy)=>{V.ox=cx-(cx-V.ox)*k;V.oy=cy-(cy-V.oy)*k;V.s*=k;rd()};
+ const xy=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*DPR,(e.clientY-r.top)*DPR]};
+ c.onpointerdown=e=>{ps[e.pointerId]=xy(e);pd=0;c.setPointerCapture(e.pointerId)};
+ c.onpointerup=c.onpointercancel=e=>{delete ps[e.pointerId];pd=0};
+ c.onpointermove=e=>{const p=ps[e.pointerId];if(!p)return;const q=xy(e),ids=Object.keys(ps);
+  if(ids.length>=2){const o=ps[ids.find(i=>i!=e.pointerId)],dd=Math.hypot(q[0]-o[0],q[1]-o[1]);if(pd)zm(dd/pd,(q[0]+o[0])/2,(q[1]+o[1])/2);pd=dd}
+  else{V.ox+=q[0]-p[0];V.oy+=q[1]-p[1];rd()}
+  ps[e.pointerId]=q};
+ c.onwheel=e=>{e.preventDefault();const q=xy(e);zm(e.deltaY<0?1.15:1/1.15,q[0],q[1])};
+})();
+let rf=0;function rd(){if(!rf)rf=requestAnimationFrame(()=>{rf=0;draw2()})}
+
+let R,sc,cam,mesh,R0=80,cs={th:.4,ph:.7,r:80};
+function init3(){
+ R=new THREE.WebGLRenderer({canvas:$('#c3'),antialias:true});R.outputEncoding=THREE.sRGBEncoding;R.setClearColor(0x14171a);R.setPixelRatio(DPR);
+ sc=new THREE.Scene();cam=new THREE.PerspectiveCamera(38,1,.1,3000);
+ sc.add(new THREE.HemisphereLight(0xffffff,0x556677,.95));
+ const d=new THREE.DirectionalLight(0xffffff,.8);d.position.set(30,70,40);sc.add(d);
+ const d2=new THREE.DirectionalLight(0xffffff,.5);d2.position.set(-30,-70,-40);sc.add(d2);
+ const c=$('#c3'),ps={};let pd=0;
+ c.onpointerdown=e=>{ps[e.pointerId]=[e.clientX,e.clientY];c.setPointerCapture(e.pointerId)};
+ c.onpointerup=c.onpointercancel=e=>{delete ps[e.pointerId];pd=0};
+ c.onpointermove=e=>{const p=ps[e.pointerId];if(!p)return;const ids=Object.keys(ps);
+  if(ids.length==2){const o=ps[ids.find(i=>i!=e.pointerId)],dd=Math.hypot(e.clientX-o[0],e.clientY-o[1]);if(pd)cs.r*=pd/dd;pd=dd}
+  else{cs.th-=(e.clientX-p[0])*.008;cs.ph=Math.min(Math.PI-.02,Math.max(.02,cs.ph-(e.clientY-p[1])*.008))}
+  ps[e.pointerId]=[e.clientX,e.clientY]};
+ c.onwheel=e=>{e.preventDefault();cs.r*=e.deltaY<0?.9:1.1};
+ (function loop(){requestAnimationFrame(loop);if(view!='3d')return;
+  cs.r=Math.max(5,Math.min(cs.r,1500));
+  cam.position.set(cs.r*Math.sin(cs.ph)*Math.sin(cs.th),cs.r*Math.cos(cs.ph),cs.r*Math.sin(cs.ph)*Math.cos(cs.th));cam.lookAt(0,0,0);R.render(sc,cam)})();
+ size()}
+function build3(){
+ if(!R||!B)return;
+ if(mesh){sc.remove(mesh);mesh.material.forEach(m=>{m.map&&m.map.dispose();m.dispose()});mesh.geometry.dispose()}
+ const w=B.maxx-B.minx,h=B.maxy-B.miny,s=Math.min(TS/w,TS/h),W=Math.ceil(w*s),H=Math.ceil(h*s);
+ const mm=fy=>({...B,s,ox:0,oy:0,fx:false,fy});
+ const mat=c=>{const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return new THREE.MeshStandardMaterial({map:t,roughness:.45,metalness:.1,alphaTest:.5})};
+ const sm=new THREE.MeshStandardMaterial({color:0xd8c48a,roughness:.7});
+ mesh=new THREE.Mesh(new THREE.BoxGeometry(w,1.6,h),[sm,sm,mat(composite('top',W,H,mm(false),'t')),mat(composite('bottom',W,H,mm(true),'b')),sm,sm]);
+ sc.add(mesh);cs.r=R0=Math.max(w,h)*1.6;setCam()}
+function setCam(){if(side=='top'){cs.th=.0;cs.ph=.6}else{cs.th=Math.PI;cs.ph=Math.PI-.6}}
+
+function size(){const st=$('#stage'),w=st.clientWidth,h=st.clientHeight,c=$('#c2');
+ c.width=w*DPR;c.height=h*DPR;if(R){R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
+ if(B){fit();draw2()}}
+new ResizeObserver(size).observe($('#stage'));
+function setView(v){view=v;$('#v2').classList.toggle('on',v=='2d');$('#v3').classList.toggle('on',v=='3d');
+ $('#c2').style.display=v=='2d'?'':'none';$('#c3').style.display=v=='3d'?'':'none';
+ $('#hint').textContent=v=='2d'?'Колесо — масштаб, перетаскивание — сдвиг':'Перетаскивание — вращение, колесо — масштаб';
+ if(v=='3d'){if(!R)init3();build3();size()}else size()}
+function setSide(s){side=s;$('#st').classList.toggle('on',s=='top');$('#sb').classList.toggle('on',s=='bottom');if(view=='3d')setCam();else draw2()}
+$('#v2').onclick=()=>setView('2d');$('#v3').onclick=()=>setView('3d');
+$('#st').onclick=()=>setSide('top');$('#sb').onclick=()=>setSide('bottom');
+$('#ft').onclick=()=>{if(view=='3d'){cs.r=R0;setCam()}else if(B){fit();draw2()}};$('#c2').ondblclick=()=>{if(B){fit();draw2()}};$('#real').onchange=draw2;$('#mk').onchange=()=>view=='3d'?build3():draw2();$('#tg').onclick=()=>$('aside').classList.toggle('open');
+$('#mc').onchange=e=>{maskKey=e.target.value;view=='3d'?build3():draw2()};
+
+function refresh(note){
+ B=bnd([LAY.outline])||bnd(ORDER.filter(k=>k!='drill').map(k=>LAY[k]))||bnd([LAY.drill]);
+ if(!B){msg('Не удалось распознать слои. Проверьте файлы.');return}
+ $('#empty').style.display='none';$('#info').innerHTML=note+'<br>Размер: '+(B.maxx-B.minx).toFixed(2)+' × '+(B.maxy-B.miny).toFixed(2)+' мм';
+ $('#ll').innerHTML='';
+ ORDER.forEach(k=>{if(!LAY[k])return;vis[k]=true;const l=document.createElement('label');
+  l.innerHTML='<input type="checkbox" checked><span class="sw" style="background:'+COL[k]+'"></span>'+NM[k]+'<span class="fn">'+(LAY[k].name||'')+'</span>';
+  l.firstChild.onchange=e=>{vis[k]=e.target.checked;view=='3d'?build3():draw2()};$('#ll').appendChild(l)});
+ fit();view=='3d'?build3():draw2()}
+
+async function load(files){
+ const ent=[];
+ try{for(const f of files){
+  if(/\.zip$/i.test(f.name)){const z=await JSZip.loadAsync(f);
+   for(const n in z.files){const e=z.files[n];if(!e.dir&&!/__MACOSX|(^|\/)\./.test(n))ent.push([n.split('/').pop(),await e.async('string')])}}
+  else ent.push([f.name,await f.text()])}}
+ catch(e){msg('Не удалось прочитать архив: '+e.message);return}
+ const L={};let cnt=0;
+ for(const [n,t] of ent){const k=kind(n,t);if(!k)continue;
+  if(k=='drill'){L.drill=L.drill||{name:n,prims:[]};L.drill.prims.push(...pD(t));cnt++}
+  else if(!L[k]){L[k]={name:n,prims:pG(t)};cnt++}}
+ if(!cnt){msg('Среди '+ent.length+' файлов не найдено знакомых слоёв.');return}
+ LAY=L;refresh('Загружено слоёв: '+cnt)}
+const pick=e=>{const f=[...e.target.files];e.target.value='';if(f.length)load(f)};
+$('#fi').onchange=pick;$('#fi2').onchange=pick;
+function msg(t){$('#info').textContent=t;$('#emsg').textContent=t}
+let dc=0;
+addEventListener('dragenter',e=>{e.preventDefault();dc++;$('#drop').style.display='flex'});
+addEventListener('dragleave',()=>{if(--dc<=0){dc=0;$('#drop').style.display='none'}});
+addEventListener('dragover',e=>e.preventDefault());
+addEventListener('drop',e=>{e.preventDefault();dc=0;$('#drop').style.display='none';load([...e.dataTransfer.files])});
+
+size();
+</script>
+</body>
+</html>
