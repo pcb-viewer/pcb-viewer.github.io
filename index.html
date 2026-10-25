@@ -4,19 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Просмотр Gerber онлайн в 2D и 3D — PCB Viewer</title>
-<meta name="description" content="Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере.">
-<meta name="keywords" content="gerber просмотр онлайн, просмотр gerber файлов, gerber viewer, 3D печатной платы, открыть gerber, pcb viewer">
+<meta name="description" content="Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере. Открывает также проекты Sprint-Layout 6 в формате lay6.">
+<meta name="keywords" content="gerber просмотр онлайн, просмотр gerber файлов, lay6 просмотр онлайн, sprint-layout 6, gerber viewer, 3D печатной платы, открыть gerber, pcb viewer">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<meta name="yandex-verification" content="e2db4677e0fc84c1" />
 <link rel="canonical" href="https://frozzy2021.github.io/pcb-viewer/">
 <meta property="og:url" content="https://frozzy2021.github.io/pcb-viewer/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="PCB Viewer">
 <meta property="og:title" content="Просмотр Gerber онлайн в 2D и 3D — PCB Viewer">
-<meta property="og:description" content="Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере.">
+<meta property="og:description" content="Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере. Открывает также проекты Sprint-Layout 6 в формате lay6.">
 <meta name="twitter:card" content="summary">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PCB Viewer","url":"https://frozzy2021.github.io/pcb-viewer/","alternateName":"Просмотр Gerber онлайн","applicationCategory":"DeveloperApplication","operatingSystem":"Any","inLanguage":"ru","description":"Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере.","offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PCB Viewer","url":"https://frozzy2021.github.io/pcb-viewer/","alternateName":"Просмотр Gerber онлайн","applicationCategory":"DeveloperApplication","operatingSystem":"Any","inLanguage":"ru","description":"Бесплатный онлайн-просмотр Gerber-файлов печатной платы в 2D и 3D. Загрузите ZIP-архив или файлы слоёв и посмотрите плату с маской, шелкографией и отверстиями. Файлы остаются в вашем браузере. Открывает также проекты Sprint-Layout 6 в формате lay6.","offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}</script>
 <meta name="theme-color" content="#1f8f4a">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%230f6b32'/%3E%3Cg fill='none' stroke='%23d9b24c' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 46h14l9-14h16'/%3E%3Cpath d='M13 18h18l7 7'/%3E%3C/g%3E%3Cg fill='%23d9b24c'%3E%3Ccircle cx='13' cy='46' r='6'/%3E%3Ccircle cx='52' cy='32' r='6'/%3E%3Ccircle cx='13' cy='18' r='6'/%3E%3C/g%3E%3Cg fill='%230f6b32'%3E%3Ccircle cx='13' cy='46' r='2.4'/%3E%3Ccircle cx='52' cy='32' r='2.4'/%3E%3Ccircle cx='13' cy='18' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -64,14 +63,15 @@ a.sup{margin-left:auto;text-decoration:none;color:#fff;background:#e8793a;border
 <main>
 <aside>
 <div id="info">Файлы не выбраны.</div>
+<select id="bs" style="display:none;width:100%;margin-top:8px"></select>
 <h2>Вид платы</h2>
 <label><input type="checkbox" id="real" checked> Реалистичный вид</label>
 <label><input type="checkbox" id="mk" checked> Паяльная маска</label>
 <h2>Слои</h2>
 <div id="ll"></div>
 </aside>
-<div id="stage"><canvas id="c2"></canvas><canvas id="c3" style="display:none"></canvas><div id="empty"><div><h2>Выберите Gerber-файлы</h2><p>ZIP-архив или набор файлов платы</p><p id="emsg"></p><label class="btn main">Выбрать файл<input id="fi2" type="file" multiple hidden></label>
-<details><summary>О сервисе</summary><p>PCB Viewer это бесплатный просмотрщик Gerber-файлов прямо в браузере. Он открывает слои формата Gerber RS-274X и файлы сверловки Excellon: медь, паяльную маску, шелкографию, контур платы и отверстия.</p><p>Загрузите ZIP-архив с производственными файлами из вашей САПР или выберите файлы слоёв по отдельности. Плату можно рассматривать сверху и снизу в плоском виде, включать и выключать слои, а также вращать в объёмной 3D-модели.</p><p>Регистрация не нужна. Файлы обрабатываются на вашем устройстве и никуда не отправляются. Сервис работает на компьютере, телефоне и планшете.</p></details></div></div><div id="drop">Отпустите файлы здесь</div><div id="hint">Колесо — масштаб, перетаскивание — сдвиг</div></div>
+<div id="stage"><canvas id="c2"></canvas><canvas id="c3" style="display:none"></canvas><div id="empty"><div><h2>Выберите Gerber-файлы</h2><p>ZIP-архив, файлы Gerber или проект Sprint-Layout 6</p><p id="emsg"></p><label class="btn main">Выбрать файл<input id="fi2" type="file" multiple hidden></label>
+<details><summary>О сервисе</summary><p>PCB Viewer это бесплатный просмотрщик Gerber-файлов прямо в браузере. Он открывает слои формата Gerber RS-274X и файлы сверловки Excellon: медь, паяльную маску, шелкографию, контур платы и отверстия.</p><p>Загрузите ZIP-архив с производственными файлами из вашей САПР или выберите файлы слоёв по отдельности. Плату можно рассматривать сверху и снизу в плоском виде, включать и выключать слои, а также вращать в объёмной 3D-модели.</p><p>Регистрация не нужна. Файлы обрабатываются на вашем устройстве и никуда не отправляются. Кроме Gerber, сервис открывает проекты Sprint-Layout 6 с расширением lay6. Он работает на компьютере, телефоне и планшете.</p></details></div></div><div id="drop">Отпустите файлы здесь</div><div id="hint">Колесо — масштаб, перетаскивание — сдвиг</div></div>
 </main>
 <script>
 const $=s=>document.querySelector(s);
@@ -149,6 +149,129 @@ function pD(t){const h=[],T={};let k=1,cur=0;
   if(m&&cur){const f=s=>s.includes('.')?parseFloat(s)*k:parseInt(s,10)/(k==1?1e3:1e4)*k;
    h.push({t:'f',s:'C',x:f(m[1]),y:f(m[2]),w:cur,h:cur})}}
  return h}
+
+function pLay(ab){
+ const u=new Uint8Array(ab),dv=new DataView(u.buffer,u.byteOffset,u.byteLength);let p=0;
+ const need=n=>{if(p+n>u.length)throw Error('Файл повреждён или обрезан')};
+ const u8=()=>{need(1);return u[p++]};
+ const u16=()=>{need(2);p+=2;return dv.getUint16(p-2,true)};
+ const i16=()=>{need(2);p+=2;return dv.getInt16(p-2,true)};
+ const u32=()=>{need(4);p+=4;return dv.getUint32(p-4,true)};
+ const i32=()=>{need(4);p+=4;return dv.getInt32(p-4,true)};
+ const f32=()=>{need(4);p+=4;return dv.getFloat32(p-4,true)};
+ const f64=()=>{need(8);p+=8;return dv.getFloat64(p-8,true)};
+ const skip=n=>{need(n);p+=n};
+ const dec=a=>{try{return new TextDecoder('windows-1251').decode(a)}catch(e){return String.fromCharCode(...a)}};
+ const fstr=m=>{const l=u8();need(m);const s=dec(u.subarray(p,p+Math.min(l,m)));p+=m;return s};
+ const vstr=()=>{const l=u32();if(l>1e5)throw Error('Неверная строка в файле');need(l);const s=dec(u.subarray(p,p+l));p+=l;return s};
+ const ver=u8();
+ if(u[1]!=0x33||u[2]!=0xAA||u[3]!=0xFF||ver>6||ver<1)throw Error('Это не файл Sprint-Layout');
+ p=4;
+ const rU=()=>ver>=3?u32():u16(),rS=()=>ver>=3?i32():i16();
+ const rC=()=>ver>=5?f32():ver>=3?i32():i16();
+ const pts=()=>{const n=rU();if(n>1e6)throw Error('Слишком много точек');const a=[];
+  for(let i=0;i<n;i++){const x=rC(),y=rC();if(x===0||(Math.abs(x)>=1.17549435e-38&&isFinite(x)))a.push([x,y]);else p-=8}return a};
+ const obj=(ch)=>{
+  const o={t:u8()};
+  if(![1,2,3,4,5,6,7,8].includes(o.t))throw Error('Неизвестный тип объекта '+o.t);
+  o.x=rC();o.y=rC();o.out=rC();o.in=rC();o.lw=rS();skip(1);o.layer=u8();o.shape=u8();
+  o.comp=0;o.sa=0;o.filled=0;o.cl=0;o.mh=0;o.mv=0;o.ko=0;o.rot=0;o.plated=0;o.mask=1;o.text='';o.pts=[];o.kids=[];
+  if(ver>=5){skip(4);o.comp=u16();skip(1);o.sa=i32();skip(5);o.filled=u8();o.cl=i32();skip(5);o.mh=u8();o.mv=u8();o.ko=u8();o.rot=i32();o.plated=u8();o.mask=u8();skip(18);
+   if(!ch){o.text=vstr();vstr()}}
+  else if(ver>=4){skip(7);o.sa=i32();skip(5);o.filled=u8();o.cl=i32();skip(9);o.mh=u8();o.mv=u8();o.ko=u8();skip(18);if(!ch)o.text=vstr()}
+  else if(ver>=3){if(o.t==3){o.text=fstr(15);skip(7);o.rot=i16();skip(25)}else{skip(23);o.sa=i32();skip(3);o.mh=u8();o.mv=u8();skip(1);o.cl=i32();skip(13)}}
+  else{if(o.t==3){o.text=fstr(15);skip(7);o.rot=i16();skip(10)}else skip(35)}
+  if(ver>=2&&!ch){const n=rU();if(n>1e5)throw Error('Слишком много групп');for(let i=0;i<n;i++)rU()}
+  if(o.t==4||o.t==6)o.pts=pts();
+  else if(o.t==2){if(ver>=5)o.pts=pts();else if(ver>=3)skip(4)}
+  else if(o.t==8){if(ver>=5)o.pts=pts()}
+  else if(o.t==7){const n=u32();if(n>1e4)throw Error('Слишком много элементов текста');
+   for(let i=0;i<n;i++)o.kids.push(obj(true));
+   if(ver>=6&&o.shape==1){rC();rC();u8();f64();vstr();vstr();u8()}}
+  return o};
+ const nb=ver>=3?rU():1,boards=[];
+ if(nb<1||nb>100)throw Error('Неверное число плат в файле');
+ for(let b=0;b<nb;b++){
+  const B={name:'',w:0,h:0,gp:[],objs:[]};
+  if(ver>=3){B.name=fstr(30);skip(4);B.w=u32();B.h=u32();for(let i=0;i<7;i++)B.gp.push(u8());
+   if(ver>=5){f64();f64();u32();u32();skip(4);skip(9);fstr(200);fstr(200);skip(32);i32();i32();u8()}
+   else{skip(19);u32();skip(7);skip(400);skip(33);if(ver>=4){i32();i32()}}}
+  else{B.w=u32();B.h=u32()}
+  const n=rU();if(n>1e6)throw Error('Слишком много объектов');
+  for(let i=0;i<n;i++)B.objs.push(obj(false));
+  if(ver>=3){let c=0;B.objs.forEach(o=>{if(o.t==2||o.t==8)c++});
+   for(let i=0;i<c;i++){const k=rU();for(let j=0;j<k;j++)rU()}}
+  boards.push(B)}
+ return{ver,boards}}
+
+function lay2L(R,bi){
+ const B=R.boards[bi],v=R.ver,m=v>=6?1e-4:1e-2,PI=Math.PI;
+ const K={fcu:[],bcu:[],fsilk:[],bsilk:[],outline:[],drill:[],fmask:[],bmask:[]},H={fcu:[],bcu:[]},X={fcu:[],bcu:[]};
+ const kind=l=>v>=4?[,'fcu','fsilk','bcu','bsilk',,,'outline'][l]:[,v>=3?'fcu':'bcu','fsilk',v>=3?'bcu':'fcu','bsilk','bcu','fsilk','outline'][l];
+ const gp={fcu:B.gp[0],bcu:v>=5?B.gp[2]:B.gp[1]};
+ const P=a=>[a[0]*m,a[1]*m];
+ const ln=(a,b,w)=>({t:'l',a:[a[0],a[1],b[0],b[1]],w,rd:true});
+ const fl=(s,c,w,h)=>({t:'f',s,x:c[0],y:c[1],w,h:h==null?w:h});
+ const chain=(q,w,closed)=>{const r=[];for(let i=0;i<q.length-(closed?0:1);i++)r.push(ln(q[i],q[(i+1)%q.length],w));return r};
+ const reg=q=>({t:'r',pts:q});
+ const arc=(c,r,a1,a2,n)=>{const q=[];for(let i=0;i<=n;i++){const a=a1+(a2-a1)*i/n;q.push([c[0]+r*Math.cos(a),c[1]+r*Math.sin(a)])}return q};
+ const padG=(o,e)=>{
+  const c=[o.x*m,o.y*m],pt=o.pts.map(P);let hw=o.out*m;
+  if(o.t==2){
+   if(pt.length==2){const a=pt[0],b=pt[1],h=2*hw,L=Math.hypot(b[0]-a[0],b[1]-a[1]);
+    if(L<=h+1e-4)return[fl('C',[(a[0]+b[0])/2,(a[1]+b[1])/2],h+e)];
+    const ux=(b[0]-a[0])/L,uy=(b[1]-a[1])/L;
+    return[ln([a[0]+ux*h/2,a[1]+uy*h/2],[b[0]-ux*h/2,b[1]-uy*h/2],h+e)]}
+   if(pt.length>=3){const r=[reg(pt)];if(e>0)r.push(...chain(pt,e,true));return r}
+   const s=o.shape,d=2*hw;
+   if(s==1||s==0)return[fl('C',c,d+e)];
+   const hz=[4,5,6].includes(s),vt=[7,8,9].includes(s),w=hz?2*d:d,h=vt?2*d:d;
+   if([4,7].includes(s)){const L=Math.max(w,h),t=Math.min(w,h),dx=hz?(L-t)/2:0,dy=vt?(L-t)/2:0;return[ln([c[0]-dx,c[1]-dy],[c[0]+dx,c[1]+dy],t+e)]}
+   const q=[[c[0]-w/2,c[1]-h/2],[c[0]+w/2,c[1]-h/2],[c[0]+w/2,c[1]+h/2],[c[0]-w/2,c[1]+h/2]],r=[reg(q)];if(e>0)r.push(...chain(q,e,true));return r}
+  if(pt.length>=3){const r=[reg(pt)];if(e>0)r.push(...chain(pt,e,true));return r}
+  const w=o.out*m,h=(o.in>0?o.in:o.out)*m,q=[[c[0]-w/2,c[1]-h/2],[c[0]+w/2,c[1]-h/2],[c[0]+w/2,c[1]+h/2],[c[0]-w/2,c[1]+h/2]],r=[reg(q)];if(e>0)r.push(...chain(q,e,true));return r};
+ const geom=(o,e,nf)=>{
+  if(o.t==1){const w=o.lw*m+e;if(o.lw==0&&o.x==o.out&&o.y==o['in'])return[];return[ln([o.x*m,o.y*m],[o.out*m,o['in']*m],Math.max(w,.01))]}
+  if(o.t==6){return o.pts.length<2?[]:chain(o.pts.map(P),Math.max(o.lw*m+e,.01),false)}
+  if(o.t==4){const q=o.pts.map(P);if(q.length<2)return[];const r=[];if(o.filled&&!nf&&q.length>=3)r.push(reg(q));if(o.lw>0||e>0||nf||!o.filled)r.push(...chain(q,Math.max(o.lw*m+e,.01),true));return r}
+  if(o.t==5){const c=[o.x*m,o.y*m],rm=(o.out+o['in'])/2*m,w=(o.out-o['in'])*m+e;let a1=o.sa,a2=o.lw;
+   if(v>=6&&(Math.abs(a1)>1000||Math.abs(a2)>1000)){a1/=1000;a2/=1000}
+   const full=v<3||(a1==0&&a2==0)||a2-a1>=360||a1==a2;
+   if(full){if(o['in']<=0)return[fl('C',c,2*o.out*m+e)];return chain(arc(c,rm,0,2*PI,Math.max(24,Math.ceil(rm*12))),Math.max(w,.01),false)}
+   if(a2<a1)a2+=360;return chain(arc(c,rm,a1*PI/180,a2*PI/180,Math.max(8,Math.ceil((a2-a1)/6))),Math.max(w,.01),false)}
+  if(o.t==2||o.t==8)return padG(o,e);
+  return[]};
+ const pa=(a,b)=>{for(const x of b)a.push(x)};
+ const add=(k,prims)=>{if(K[k])pa(K[k],prims)};
+ const objs=[];
+ B.objs.forEach(o=>{
+  if(o.t==3)return;
+  const k=kind(o.layer);if(!k)return;
+  if(o.t==7){if(o.comp>0&&!o.filled)return;
+   const ps=[];o.kids.forEach(c=>{if(c.t==6||c.t==1)ps.push(...geom(c,0))});
+   objs.push({o,k,ps,halo:k=='fcu'||k=='bcu'?o.kids.flatMap(c=>geom(c,2*o.cl*m)):[]});return}
+  if(o.t==4&&o.ko&&(k=='fcu'||k=='bcu')){const q=o.pts.map(P);if(q.length>=3)X[k].push(reg(q));return}
+  objs.push({o,k})});
+ objs.forEach(({o,k,ps})=>{
+  const isPad=o.t==2||o.t==8,plated=o.t==2&&(o.plated||(v<=3&&o.layer==5));
+  const ks=plated?['fcu','bcu']:[k];
+  ks.forEach(kk=>{
+   if(o.t==7){add(kk,ps);return}
+   add(kk,geom(o,0,kk=='outline'));
+   if((kk=='fcu'||kk=='bcu')&&gp[kk]&&o.cl>0&&!(isPad&&v>=5&&o.mh))pa(H[kk],geom(o,2*o.cl*m).map(p=>({...p,clr:true})));
+   if(isPad&&o.mask&&(kk=='fcu'||kk=='bcu'))pa(K[kk[0]+'mask'],padG(o,.1))});
+  if(o.t==2&&o['in']>0)K.drill.push(fl('C',[o.x*m,o.y*m],2*o['in']*m))});
+ ['fcu','bcu'].forEach(k=>{
+  const pl=[];
+  if(gp[k]){const w=B.w*m,h=B.h*m;pl.push(reg([[0,-h],[w,-h],[w,0],[0,0]]));
+   objs.forEach(x=>{if(x.k==k&&x.halo&&x.o.cl>0)pa(pl,x.halo.map(p=>({...p,clr:true})))});
+   pa(pl,H[k]);pa(pl,X[k].map(p=>({...p,clr:true})))}
+  K[k]=[...pl,...K[k]]});
+ if(!K.outline.length){const w=B.w*m,h=B.h*m;pa(K.outline,chain([[0,0],[w,0],[w,-h],[0,-h]],.1,true))}
+ K.outline=K.outline.filter(p=>p.t!='r');
+ const L={skipped:B.objs.filter(o=>o.t==3&&o.text).length};
+ Object.keys(K).forEach(k=>{if(K[k].length||k=='fmask'||k=='bmask')L[k]={name:B.name||'Sprint-Layout',prims:K[k]}});
+ return L}
 
 function bnd(Ls){let a=1e9,b=1e9,c=-1e9,d=-1e9;
  const u=(x,y,r=0)=>{a=Math.min(a,x-r);c=Math.max(c,x+r);b=Math.min(b,y-r);d=Math.max(d,y+r)};
@@ -250,7 +373,7 @@ function setView(v){view=v;$('#v2').classList.toggle('on',v=='2d');$('#v3').clas
 function setSide(s){side=s;$('#st').classList.toggle('on',s=='top');$('#sb').classList.toggle('on',s=='bottom');if(view=='3d')setCam();else draw2()}
 $('#v2').onclick=()=>setView('2d');$('#v3').onclick=()=>setView('3d');
 $('#st').onclick=()=>setSide('top');$('#sb').onclick=()=>setSide('bottom');
-$('#ft').onclick=()=>{if(view=='3d'){cs.r=R0;setCam()}else if(B){fit();draw2()}};$('#c2').ondblclick=()=>{if(B){fit();draw2()}};$('#real').onchange=draw2;$('#mk').onchange=()=>view=='3d'?build3():draw2();$('#tg').onclick=()=>$('aside').classList.toggle('open');
+$('#ft').onclick=()=>{if(view=='3d'){cs.r=R0;setCam()}else if(B){fit();draw2()}};$('#c2').ondblclick=()=>{if(B){fit();draw2()}};$('#bs').onchange=e=>{if(LR)showBoard(+e.target.value)};$('#real').onchange=draw2;$('#mk').onchange=()=>view=='3d'?build3():draw2();$('#tg').onclick=()=>$('aside').classList.toggle('open');
 $('#mc').onchange=e=>{maskKey=e.target.value;view=='3d'?build3():draw2()};
 
 function refresh(note){
@@ -263,19 +386,33 @@ function refresh(note){
   l.firstChild.onchange=e=>{vis[k]=e.target.checked;view=='3d'?build3():draw2()};$('#ll').appendChild(l)});
  fit();view=='3d'?build3():draw2()}
 
+let LR=null;
+function showBoard(i){
+ LAY=lay2L(LR,i);
+ const n=LAY.skipped;
+ refresh('Проект Sprint-Layout, версия '+LR.ver+(n?'<br>Текст шрифтом TrueType не отображается: '+n:''));
+ const b=$('#bs');b.style.display=LR.boards.length>1?'block':'none'}
+function openLay(name,ab){
+ try{LR=pLay(ab);
+  const b=$('#bs');b.innerHTML='';LR.boards.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+(x.name||'Плата');b.appendChild(o)});
+  showBoard(0)}
+ catch(e){msg('Не удалось открыть файл Sprint-Layout: '+e.message)}}
 async function load(files){
- const ent=[];
+ const ent=[],lay=[];
  try{for(const f of files){
   if(/\.zip$/i.test(f.name)){const z=await JSZip.loadAsync(f);
-   for(const n in z.files){const e=z.files[n];if(!e.dir&&!/__MACOSX|(^|\/)\./.test(n))ent.push([n.split('/').pop(),await e.async('string')])}}
+   for(const n in z.files){const e=z.files[n];if(e.dir||/__MACOSX|(^|\/)\./.test(n))continue;const nm=n.split('/').pop();
+    if(/\.lay6?$/i.test(nm))lay.push([nm,await e.async('arraybuffer')]);else ent.push([nm,await e.async('string')])}}
+  else if(/\.lay6?$/i.test(f.name))lay.push([f.name,await f.arrayBuffer()]);
   else ent.push([f.name,await f.text()])}}
  catch(e){msg('Не удалось прочитать архив: '+e.message);return}
+ if(lay.length){openLay(lay[0][0],lay[0][1]);return}
  const L={};let cnt=0;
  for(const [n,t] of ent){const k=kind(n,t);if(!k)continue;
   if(k=='drill'){L.drill=L.drill||{name:n,prims:[]};L.drill.prims.push(...pD(t));cnt++}
   else if(!L[k]){L[k]={name:n,prims:pG(t)};cnt++}}
  if(!cnt){msg('Среди '+ent.length+' файлов не найдено знакомых слоёв.');return}
- LAY=L;refresh('Загружено слоёв: '+cnt)}
+ LAY=L;$('#bs').style.display='none';refresh('Загружено слоёв: '+cnt)}
 const pick=e=>{const f=[...e.target.files];e.target.value='';if(f.length)load(f)};
 $('#fi').onchange=pick;$('#fi2').onchange=pick;
 function msg(t){$('#info').textContent=t;$('#emsg').textContent=t}
